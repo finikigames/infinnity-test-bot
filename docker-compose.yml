@@ -1,0 +1,19 @@
+version: '3'
+
+services:
+  telegram-bot:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - BOT_TOKEN=7029767434:AAE8JBFLQaPdP4kerhSRuNbc8TdvhpqeWo0
+    depends_on:
+      - mongo
+    links:
+      - mongo
+
+  mongo:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - "27017:27017"
