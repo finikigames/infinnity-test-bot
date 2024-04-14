@@ -26,7 +26,7 @@ export class DeathlineContext {
     public getCue(ctx: TContext, cueId?: string): TCue {
         var user = this.getUser(ctx)
         if (user === undefined) {
-            return this.game.cues["intro:1"]
+            return this.game.cues["test:1"]
         }
         return this.game.cues[cueId || this.getUser(ctx).currentId];
     }
