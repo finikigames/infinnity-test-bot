@@ -4,14 +4,14 @@ services:
   telegram-bot:
     build: 
       context: .
-      dockerfile: Dockerfile
+      dockerfile: pe-quest-game/Dockerfile
     environment:
       - BOT_TOKEN=7029767434:AAE8JBFLQaPdP4kerhSRuNbc8TdvhpqeWo0
+      - GAME_NAME=infinnity-test
     depends_on:
       - mongo
     links:
       - mongo
-
   mongo:
     image: mongo:latest
     container_name: mongodb
