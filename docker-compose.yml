@@ -4,7 +4,7 @@ services:
   telegram-bot:
     build: 
       context: .
-      dockerfile: pe-quest-game/Dockerfile
+      dockerfile: Dockerfile
     environment:
       - BOT_TOKEN=7029767434:AAE8JBFLQaPdP4kerhSRuNbc8TdvhpqeWo0
       - GAME_NAME=infinnity-test
