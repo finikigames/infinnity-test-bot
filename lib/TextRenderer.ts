@@ -1,7 +1,10 @@
 import Telegraf = require('telegraf');
 import template = require('lodash.template');
+
+import {IImage} from './MediaRenderer';
+
 import { TemplateExecutor } from 'lodash';
-import { IAudioCue, IChoice, TCue, IGame, IImgCue, ITemplateSettings, IUser, TState, IGameSettings, IVideoCue } from './deathline';
+import { IAudioCue, IChoice, TCue, IGame, IImgCue, ITemplateSettings, IUser, TState, IGameSettings, IVideoCue, IMultipleImgCue } from './deathline';
 import { restartConfirmation, restartRequest, waitingMessage } from './constants';
 import { runSafeExpression } from './safeExpression';
 import { IDict } from './IDict';
@@ -18,6 +21,7 @@ export interface IReply {
     img?: string;
     audio?: string;
     video?: string;
+    images?: IImage[];
 }
 
 /**
@@ -143,7 +147,11 @@ export class TextRenderer {
         return (<IImgCue>cue).img !== undefined;
     }
 
-    private isVideoCue(cue : TCue): cue is IVideoCue {
+    private isMultipleImgCue(cue: TCue): cue is IMultipleImgCue {
+        return (<IMultipleImgCue>cue).images !== undefined;
+    }
+
+    private isVideoCue(cue: TCue): cue is IVideoCue {
         return (<IVideoCue>cue).video !== undefined;
     }
 
@@ -163,6 +171,8 @@ export class TextRenderer {
             reply.audio = cue.audio;
         } else if (this.isVideoCue(cue)) {
             reply.video = cue.video;
+        } else if (this.isMultipleImgCue(cue)) {
+            reply.images = cue.images;
         }
 
         return reply;

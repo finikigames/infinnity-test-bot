@@ -24,10 +24,11 @@ export class DeathlineContext {
     }
 
     public getCue(ctx: TContext, cueId?: string): TCue {
-        var user = this.getUser(ctx)
+        const user = this.getUser(ctx);
         if (user === undefined) {
-            return this.game.cues["test:1"]
+            return this.game.cues['test:1'];
         }
+
         return this.game.cues[cueId || this.getUser(ctx).currentId];
     }
 
@@ -64,6 +65,17 @@ export class DeathlineContext {
                 console.error(e);
 
                 return ctx.reply('Bad video, reply.buttons', reply.buttons);
+            });
+        } else if (reply.images) {
+            return this.mediaRenderer.renderMedias(reply.images).then((options) => {
+                return ctx.replyWithMediaGroup(options, {
+                    caption: reply.message,
+                    ...reply.buttons,
+                });
+            }).catch((e) => {
+                console.error(e);
+
+                return ctx.reply('Bad images, reply.buttons', reply.buttons);
             });
         } else {
             if (this.game.settings.markdown) {

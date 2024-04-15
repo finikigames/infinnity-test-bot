@@ -30,6 +30,7 @@ interface IContext {
     replyWithPhoto(message: object, opts?: any): void;
     replyWithAudio(message: object, opts?: any): void;
     replyWithVideo(message: object, opts?: any): void;
+    replyWithMediaGroup(message: object, opts?: any): void;
     session?: any;
     from: {
         username: string;

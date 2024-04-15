@@ -1,7 +1,7 @@
-import { isAbsolute, resolve, dirname } from 'path';
-import { stat as _stat} from 'fs';
-import { promisify } from 'util';
-import { IGame } from './deathline';
+import {dirname, isAbsolute, resolve} from 'path';
+import {stat as _stat} from 'fs';
+import {promisify} from 'util';
+import {IGame} from './deathline';
 
 const stat = promisify(_stat);
 
@@ -11,7 +11,20 @@ interface IUrl {
 interface ISource {
     source: string;
 }
+
+export interface IImage {
+    source: string;
+    caption: string;
+    type: string;
+}
+
 type TFileOptions = IUrl | ISource;
+
+interface IImageSource {
+    source: ISource | IUrl;
+    caption: string;
+    type: string;
+}
 
 // tslint:disable-next-line:max-classes-per-file
 class NotAFileError extends Error {
@@ -93,5 +106,29 @@ export class MediaRenderer {
         } else {*/
             return await this.get(media);
         //}
+    }
+
+    public async renderMedias(medias: IImage[]): Promise<IImageSource[]> {
+        /*if (this.pathsCache.has(media)) {
+            const options = this.pathsCache.get(media);
+            if (options instanceof Error) {
+                throw options;
+            } else if (options !== undefined) {
+                return options;
+            } else {
+                return await this.get(media);
+            }
+        } else {*/
+        //}
+
+        return await Promise.all(medias.map(async (media) => {
+            const source = await this.get(media.source);
+
+            return {
+                source,
+                caption: media.caption,
+                type: 'photo',
+            };
+        }));
     }
 }

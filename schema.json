@@ -103,6 +103,10 @@
                 "autoTransition": {
                     "$ref": "#/definitions/ITransition"
                 },
+                "images": {
+                    "type": "array",
+                    "description": "Pictures"
+                },
                 "img": {
                     "type": "string",
                     "description": "Picture"

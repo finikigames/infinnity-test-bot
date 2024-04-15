@@ -1,4 +1,5 @@
 import { IDict } from './IDict';
+import { IImage } from './MediaRenderer';
 
 export type TState = IDict<any>;
 
@@ -13,6 +14,10 @@ export interface ITransition {
     delay?: number | string;
 }
 
+export interface IWaitForInput extends ITransition {
+    setter?: TSetter;
+}
+
 export interface IChoice extends ITransition {
     /** button label */
     label: string;
@@ -25,6 +30,7 @@ export interface ICue {
     text: string;
     /** choices to make */
     choices?: IChoice[];
+    waitForInput?: IChoice[];
     /** automatically transit to given cue */
     autoTransition?: ITransition;
     /** cue id to inherit properties from */
@@ -43,7 +49,11 @@ export interface IAudioCue extends ICue {
     audio: string;
 }
 
-export type TCue = ICue | IImgCue | IAudioCue | IVideoCue;
+export interface IMultipleImgCue extends ICue {
+    images: IImage[];
+}
+
+export type TCue = ICue | IImgCue | IAudioCue | IVideoCue | IMultipleImgCue;
 
 export interface ITemplateSettings<T> {
     escape?: T;
