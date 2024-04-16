@@ -87,6 +87,11 @@
             "additionalProperties": false
         },
 
+        "IWaitForInput": {
+            "type": "object",
+            "$ref": "#/definitions/ITransition"
+        },
+
         "ICue": {
             "type": "object",
             "properties": {
@@ -114,6 +119,9 @@
                 "video": {
                     "type": "string",
                     "description": "Video"
+                },
+                "waitForInput": {
+                    "$ref": "#/definitions/IWaitForInput"
                 }
             },
             "required": ["text"],

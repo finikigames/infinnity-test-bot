@@ -68,10 +68,9 @@ export class DeathlineContext {
             });
         } else if (reply.images) {
             return this.mediaRenderer.renderMedias(reply.images).then((options) => {
-                return ctx.replyWithMediaGroup(options, {
-                    caption: reply.message,
-                    ...reply.buttons,
-                });
+                ctx.replyWithMediaGroup(options);
+
+                return ctx.replyWithMarkdown(reply.message, reply.buttons);
             }).catch((e) => {
                 console.error(e);
 

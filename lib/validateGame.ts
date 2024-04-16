@@ -56,6 +56,14 @@ function validateAutoTransition(cueIds: string[], cue: ICue, id: string): boolea
     }
 }
 
+function validateWaitForInput(cueIds: string[], cue: ICue, id: string): boolean {
+    if (cue.waitForInput) {
+        return cueIds.includes(cue.waitForInput.id);
+    } else {
+        return false;
+    }
+}
+
 export function validateCues(cues: IImportedCues): IValidationResult {
     const cueIds = Object.keys(cues.cues);
     const availableChoices: string[] = [];
@@ -84,10 +92,18 @@ export function validateCues(cues: IImportedCues): IValidationResult {
                     id: cueId,
                 });
             }
+        } else if (cue.waitForInput) {
+            availableChoices.push(cue.waitForInput.id);
+            const isValidWaitForInput = validateWaitForInput(cueIds, cue, cueId);
+            if (!isValidWaitForInput) {
+                info.isValid = false;
+                info.orphanChoices.push({
+                    id: cueId,
+                });
+            }
         } else {
             info.potentialEndings.push(cueId);
         }
-
     });
 
     cueIds.forEach((cueId) => {
@@ -113,7 +129,7 @@ function renderOrphanTransitions(transitions: IInvalidTransition[]): string {
 export function renderValidationResult(info: IValidationResult) {
     if (!info.isValid) {
         if (info.orphanChoices.length) {
-            console.error(`Detected orphan choices and transitions: ${renderOrphanTransitions(info.orphanChoices)}.`);
+            console.error(`Detected orphan choices, transitions and wait for input: ${renderOrphanTransitions(info.orphanChoices)}.`);
         }
 
         if (info.orphanCues.length) {

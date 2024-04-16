@@ -5,7 +5,7 @@ import { createBot } from './lib/createBot';
 import { loadGame } from './lib/loadGame';
 import { IUser, ITransition } from './lib/deathline';
 import { TimeOutManager } from './lib/TimeOutManager';
-import { extractCueId } from './lib/extractCueId';
+import {extractCueId, extractCueIdFromMessage} from './lib/extractCueId';
 import { getChoice } from './lib/getChoice';
 import { createUser } from './lib/createUser';
 import { cuePrefix } from './lib/constants';
@@ -21,20 +21,23 @@ loadGame(process.env.GAME_NAME).then((game) => {
     const textRenderer = new TextRenderer(game);
     const mediaRenderer = new MediaRenderer(game);
     extendContext(bot, game, textRenderer, mediaRenderer);
-    
+
     bot.catch((err) => {
-        console.log('Ooops', err)
-      })
+        console.log('Ooops', err);
+    });
 
     bot.command('/help', (ctx) => {
         //return ctx.deathline.help(ctx);
     });
 
+    bot.action('/restart', restart);
+    bot.command('/restart', restart);
+
     bot.command('/start', (ctx) => {
         const username = ctx.from.username;
 
         if (!ctx.session[username]) {
-            ctx.session[username] = createUser(game);
+            ctx.session[username] = createUser(game, ctx);
         }
 
         const transition: ITransition = {
@@ -43,6 +46,27 @@ loadGame(process.env.GAME_NAME).then((game) => {
 
         return transitionTo(transition, ctx.session[username])
             .then(replyResolver(ctx));
+    });
+
+    bot.on('text', async (ctx) => {
+        const user = ctx.deathline.getUser(ctx);
+        const currentCue = ctx.deathline.getCue(ctx);
+
+        if (currentCue.waitForInput) {
+            const transition = currentCue.waitForInput;
+
+            if (transition) {
+                // clear idle timeout
+                if (user !== undefined && user.timeout) {
+                    timeOutManager.clear(user.timeout);
+                }
+
+                return transitionTo(transition, user, ctx.message.text)
+                    .then(replyResolver(ctx));
+            } else {
+                console.error(`Invalid transition to ${currentCue.waitForInput.id}`);
+            }
+        }
     });
 
     function replyResolver(ctx: TContext) {
@@ -57,7 +81,7 @@ loadGame(process.env.GAME_NAME).then((game) => {
 
     function restart(ctx: IContextUpdate) {
         const username = ctx.from.username;
-        ctx.session[username] = createUser(game);
+        ctx.session[username] = createUser(game, ctx);
 
         const transition = {
             id: game.start,
@@ -67,15 +91,12 @@ loadGame(process.env.GAME_NAME).then((game) => {
             .then(replyResolver(ctx));
     }
 
-    bot.action('/restart', restart);
-    bot.command('/restart', restart);
-
-    function transitionTo(transition: ITransition, user: IUser): Promise<IReply> {
+    function transitionTo(transition: ITransition, user: IUser, setValue?: string): Promise<IReply> {
         const targetCue = game.cues[transition.id];
 
-        if (user === undefined) return Promise.reject("Cant");
+        if (user === undefined) { return Promise.reject('Cant'); }
         if (transition.setter) {
-            user.state = applySetter(user, transition.setter);
+            user.state = applySetter(user, transition.setter, setValue);
         }
 
         const reply = textRenderer.cue(targetCue, user.state, transition.id);
@@ -101,7 +122,7 @@ loadGame(process.env.GAME_NAME).then((game) => {
         const currentCue = ctx.deathline.getCue(ctx);
         const [cue, choice] = extractCueId(ctx);
         const transition = getChoice(currentCue, choice);
-        
+
         if (transition) {
             // clear idle timeout
             if (user !== undefined && user.timeout) {

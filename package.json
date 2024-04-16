@@ -27,6 +27,9 @@
     "lodash.set": "^4.3.2",
     "lodash.template": "^4.4.0",
     "ms": "^2.0.0",
+    "nocache": "^4.0.0",
+    "socket.io": "^4.7.5",
+    "socket.io-client": "^4.7.5",
     "telegraf": "^3.40.0",
     "telegraf-session-local": "0.0.4"
   },

@@ -15,7 +15,6 @@ export interface ITransition {
 }
 
 export interface IWaitForInput extends ITransition {
-    setter?: TSetter;
 }
 
 export interface IChoice extends ITransition {
@@ -30,7 +29,7 @@ export interface ICue {
     text: string;
     /** choices to make */
     choices?: IChoice[];
-    waitForInput?: IChoice[];
+    waitForInput?: IWaitForInput;
     /** automatically transit to given cue */
     autoTransition?: ITransition;
     /** cue id to inherit properties from */
@@ -95,6 +94,8 @@ export interface IGame extends IImportedCues {
 export interface IUser {
     /** last shown cue id */
     currentId: string;
+    userName: string;
+    displayName: string;
     /** user game state */
     state: TState;
     /** current timeout, if any */

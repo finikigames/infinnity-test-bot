@@ -40,7 +40,7 @@ const setterMap: IDict<Function> = {
     },
 };
 
-export function applySetter(user: IUser, setter?: TSetter): TState {
+export function applySetter(user: IUser, setter?: TSetter, setValue?: string): TState {
     const state = clone(user.state);
 
     if (!setter) {
@@ -64,8 +64,9 @@ export function applySetter(user: IUser, setter?: TSetter): TState {
             operand = action;
         }
 
-        const oldValue = get(state, stateKey);
-        const newValue = operation(oldValue, operand);
+        let oldValue = get(state, stateKey);
+        if (!oldValue || isNaN(oldValue)) { oldValue = 0; }
+        const newValue = setValue ? setValue : operation(oldValue, operand);
         set(state, stateKey, newValue);
     });
 

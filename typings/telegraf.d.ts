@@ -15,6 +15,9 @@ interface IUpdate {
         message_id: number;
         from: {
             id: number;
+            first_name: string;
+            last_name: string;
+            is_premium: boolean;
         };
         chat: object;
         date: number;
@@ -59,6 +62,7 @@ declare class Telegraf {
     public startPolling(): void;
     public use(...middlware: Function[]): void;
     public catch(erro: (err: any) => void): void;
+    public on(msg: string, handler: IHandler<IContextMessage>): void;
     public context: any;
 }
 
