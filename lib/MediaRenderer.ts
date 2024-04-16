@@ -2,6 +2,7 @@ import {dirname, isAbsolute, resolve} from 'path';
 import {stat as _stat} from 'fs';
 import {promisify} from 'util';
 import {IGame} from './deathline';
+import * as fs from 'fs';
 
 const stat = promisify(_stat);
 
@@ -12,16 +13,18 @@ interface ISource {
     source: string;
 }
 
+interface IFileSource {
+    source: Buffer;
+}
+
 export interface IImage {
     source: string;
     caption: string;
     type: string;
 }
 
-type TFileOptions = IUrl | ISource;
-
 interface IImageSource {
-    source: ISource | IUrl;
+    media: IFileSource;
     caption: string;
     type: string;
 }
@@ -46,7 +49,7 @@ class AbsolutePathError extends Error {
 
 // tslint:disable-next-line:max-classes-per-file
 export class MediaRenderer {
-    private pathsCache: Map<string, TFileOptions> = new Map();
+    private pathsCache: Map<string, ISource> = new Map();
 
     private gameDir: string;
 
@@ -62,10 +65,10 @@ export class MediaRenderer {
         return resolve(this.gameDir, media);
     }
 
-    private async resolveResource(media: string): Promise<TFileOptions> {
+    private async resolveResource(media: string): Promise<ISource> {
         if (this.isUrl(media)) {
             return {
-                src: media,
+                source: media,
             };
         } else {
             if (isAbsolute(media)) {
@@ -85,7 +88,7 @@ export class MediaRenderer {
         }
     }
 
-    private async get(media: string): Promise<TFileOptions> {
+    private async get(media: string): Promise<ISource> {
         const options = await this.resolveResource(media);
 
         //this.pathsCache.set(media, options);
@@ -93,7 +96,7 @@ export class MediaRenderer {
         return options;
     }
 
-    public async renderMedia(media: string): Promise<TFileOptions> {
+    public async renderMedia(media: string): Promise<ISource> {
         /*if (this.pathsCache.has(media)) {
             const options = this.pathsCache.get(media);
             if (options instanceof Error) {
@@ -106,6 +109,18 @@ export class MediaRenderer {
         } else {*/
             return await this.get(media);
         //}
+    }
+
+    private async loadImageToBuffer(filePath: ISource): Promise<Buffer> {
+        return new Promise<Buffer>((resolver, reject) => {
+            fs.readFile(filePath.source, (err, data) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolver(data);
+                }
+            });
+        });
     }
 
     public async renderMedias(medias: IImage[]): Promise<IImageSource[]> {
@@ -121,12 +136,17 @@ export class MediaRenderer {
         } else {*/
         //}
 
-        return await Promise.all(medias.map(async (media) => {
-            const source = await this.get(media.source);
+        return await Promise.all(medias.map(async (rawImage) => {
+            const source = await this.get(rawImage.source);
+
+            const imageBuffer = await this.loadImageToBuffer(source);
+            const fileSource: IFileSource = {
+                source: imageBuffer,
+            };
 
             return {
-                source,
-                caption: media.caption,
+                media: fileSource,
+                caption: rawImage.caption,
                 type: 'photo',
             };
         }));

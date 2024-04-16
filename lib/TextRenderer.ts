@@ -77,7 +77,7 @@ export class TextRenderer {
 
     private template(str: string, data?: object): string {
         if (!this.templateCache[str]) {
-            this.templateCache[str] = template(str, this.templateSettings);
+            this.templateCache[str] = template(str, data);
         }
 
         return this.templateCache[str](data);
