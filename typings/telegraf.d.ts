@@ -74,6 +74,8 @@ declare namespace Telegraf {
     export class Extra {
         public static HTML(): any;
         public static markdown(): any;
+
+        public static markup<T>(markup: ((m: Markup) => T) | T): Extra;
     }
 }
 

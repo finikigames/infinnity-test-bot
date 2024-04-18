@@ -72,7 +72,6 @@ export class TextRenderer {
     private initServiceMessages(settings: IGameSettings) {
         this.restartRequest = settings.restartRequest || restartRequest;
         this.restartConfirmation = settings.restartConfirmation || restartConfirmation;
-        this.waitingMessage = settings.waitingMessage || waitingMessage;
     }
 
     private template(str: string, data?: object): string {
@@ -105,13 +104,30 @@ export class TextRenderer {
         );
     }
 
+    private shuffleArray<T>(array: T[]): T[] {
+        const shuffledArray = array.slice(); // Создаем копию исходного массива
+
+        // Функция сравнения для перемешивания элементов
+        const compareFunction = () => Math.random() - 0.5;
+
+        // Используем функцию сравнения для перемешивания элементов
+        shuffledArray.sort(compareFunction);
+
+        return shuffledArray;
+    }
+
     private inlineKeyboard(buttons: IButton[]): any {
         return this.markupRenderer().markup((markup: any) => {
+            buttons = this.shuffleArray(buttons);
             const keyboard = buttons.map(
                 (button) => this.renderButton(button, markup)
             );
 
-            return markup.inlineKeyboard(keyboard);
+            if (this.game.settings.inlineKeyboard) {
+                return markup.inlineKeyboard(keyboard);
+            } else {
+                return markup.keyboard(keyboard);
+            }
         });
     }
 
@@ -121,7 +137,7 @@ export class TextRenderer {
                 return this.choiceButton(choice, state, cueId, index, markup);
             };
 
-            const keyboard = choices.reduce<any[]>((buttons, choice, index) => {
+            let keyboard = choices.reduce<any[]>((buttons, choice, index) => {
                 if (this.isChoiceVisible(choice, state)) {
                     buttons.push(renderButton(choice, index));
                 }
@@ -129,7 +145,21 @@ export class TextRenderer {
                 return buttons;
             }, []);
 
-            return markup.inlineKeyboard(keyboard);
+            keyboard = this.shuffleArray(keyboard);
+
+            const newCue = this.game.cues[cueId];
+
+            if (newCue.onlyOneButton) {
+                keyboard = keyboard.slice(0, 1);
+            }
+
+            if (this.game.settings.inlineKeyboard || newCue.inlineKeyboard) {
+                markup.removeKeyboard();
+
+                return markup.inlineKeyboard(keyboard);
+            } else {
+                return markup.keyboard(keyboard);
+            }
         });
     }
 

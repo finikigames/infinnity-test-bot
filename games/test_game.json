@@ -2,8 +2,9 @@
     "title": "Test game",
     "description": "This is test deathline game. Use /restart to restart game from scratch.",
     "settings": {
-        "markdown": false,
-        "templateSettings": {}
+        "markdown": true,
+        "templateSettings": {},
+        "inlineKeyboard": false
     },
     "state": {
         "first": 0,
@@ -680,7 +681,7 @@
             }
         },
         "test:12": {
-            "text": "Введите Функциональное направление",
+            "text": "Выбирете Функциональное направление",
             "choices": [
                 {
                     "label": "Руководитель", "id": "test:13",
@@ -765,7 +766,7 @@
             ]
         },
         "test:13:alternative": {
-            "text": "Введите функциональное уровень вручную",
+            "text": "Введите функциональный уровень вручную",
             "waitForInput": {
                 "id": "test:14",
                 "setter": {
@@ -784,6 +785,8 @@
         },
         "result:2": {
             "text": "Вывод результата",
+            "onlyOneButton": true,
+            "inlineKeyboard": true,
             "choices": [
                 {
                     "label": "Узнать результат", "id": "result:po",
@@ -793,40 +796,42 @@
                     }
                 },
                 {
-                    "label": "Узнать результат", "id": "result:tiger",
+                    "label": "Узнать результат ", "id": "result:tiger",
                     "visible": "Math.max(state.first,state.second,state.third,state.fourth,state.fifth,state.six,state.seven) == state.second",
-                    "setter": {"result": 2
+                    "setter": {
+                        "result": 2
                      }
                 },
                 {
-                    "label": "Узнать результат", "id": "result:bogomol",
+                    "label": "Узнать результат  ", "id": "result:bogomol",
                     "visible": "Math.max(state.first,state.second,state.third,state.fourth,state.fifth,state.six,state.seven) == state.third",
                     "setter": {
                         "result": 3
                     }
                 },
                 {
-                    "label": "Узнать результат", "id": "result:monke",
+                    "label": "Узнать результат   ", "id": "result:monke",
                     "visible": "Math.max(state.first,state.second,state.third,state.fourth,state.fifth,state.six,state.seven) == state.fourth",
                     "setter": {
                         "result": 4
-                    }},
+                    }
+                },
                 {
-                    "label": "Узнать результат", "id": "result:snake",
+                    "label": "Узнать результат    ", "id": "result:snake",
                     "visible": "Math.max(state.first,state.second,state.third,state.fourth,state.fifth,state.six,state.seven) == state.fifth",
                     "setter": {
                         "result": 5
                     }
                 },
                 {
-                    "label": "Узнать результат", "id": "result:zhuravl",
+                    "label": "Узнать результат     ", "id": "result:zhuravl",
                     "visible": "Math.max(state.first,state.second,state.third,state.fourth,state.fifth,state.six,state.seven) == state.six",
                     "setter": {
                         "result": 6
                     }
                 },
                 {
-                    "label": "Узнать результат", "id": "result:shifu",
+                    "label": "Узнать результат      ", "id": "result:shifu",
                     "visible": "Math.max(state.first,state.second,state.third,state.fourth,state.fifth,state.six,state.seven) == state.seven",
                     "setter": {
                         "result": 7
@@ -851,7 +856,7 @@
             "img": "photos/monoke.jpg"
         },
         "result:snake": {
-            "text": "Тебя можно описать  как хитрого, ловкого и остроумного. Ты обладаешь харизмой и умением обходить препятствия, как змея, ползая сквозь жизненные сложности с изящной грацией. Твои слова и действия часто стратегичны и хитры, позволяя тебе выходить из любых ситуаций с минимальными потерями. Ты обладаешь исключительным чувством юмора и способностью находить выход из самых запутанных ситуаций. Ты опытен в мастерстве маскировки и проникновении в самые труднодоступные места. Тебе свойственно избегать прямых столкновений, предпочитая более хитрые методы достижения целей. Своей хитростью и интеллектом ты часто покоряешь сложности, которые другие считали бы непреодолимыми.",
+            "text": "Тебя можно описать как хитрого, ловкого и остроумного. Ты обладаешь харизмой и умением обходить препятствия, как змея, ползая сквозь жизненные сложности с изящной грацией. Твои слова и действия часто стратегичны и хитры, позволяя тебе выходить из любых ситуаций с минимальными потерями. Ты обладаешь исключительным чувством юмора и способностью находить выход из самых запутанных ситуаций. Ты опытен в мастерстве маскировки и проникновении в самые труднодоступные места. Тебе свойственно избегать прямых столкновений, предпочитая более хитрые методы достижения целей. Своей хитростью и интеллектом ты часто покоряешь сложности, которые другие считали бы непреодолимыми.",
             "img": "photos/snake.jpg"
         },
         "result:zhuravl": {

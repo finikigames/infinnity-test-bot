@@ -67,6 +67,23 @@ loadGame(process.env.GAME_NAME).then((game) => {
                 console.error(`Invalid transition to ${currentCue.waitForInput.id}`);
             }
         }
+
+        if (!game.settings.inlineKeyboard || !currentCue.inlineKeyboard) {
+            const choice = extractCueIdFromMessage(currentCue, ctx);
+            const transition = getChoice(currentCue, choice);
+
+            if (transition) {
+                // clear idle timeout
+                if (user !== undefined && user.timeout) {
+                    timeOutManager.clear(user.timeout);
+                }
+
+                return transitionTo(transition, user, undefined)
+                    .then(replyResolver(ctx));
+            } else {
+                console.error(`Invalid transition to ${currentCue}`);
+            }
+        }
     });
 
     function replyResolver(ctx: TContext) {
@@ -134,7 +151,6 @@ loadGame(process.env.GAME_NAME).then((game) => {
         } else {
             console.error(`Invalid transition to ${cue}`);
         }
-
     });
 
     bot.startPolling();

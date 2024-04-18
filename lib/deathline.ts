@@ -34,6 +34,8 @@ export interface ICue {
     autoTransition?: ITransition;
     /** cue id to inherit properties from */
     extends?: string;
+    onlyOneButton?: boolean;
+    inlineKeyboard?: boolean;
 }
 
 export interface IVideoCue extends ICue {
@@ -67,7 +69,7 @@ export interface IGameSettings {
     templateSettings?: ITemplateSettings<string>;
     restartRequest?: string;
     restartConfirmation?: string;
-    waitingMessage?: string;
+    inlineKeyboard?: boolean;
 }
 
 export interface IImportedCues {

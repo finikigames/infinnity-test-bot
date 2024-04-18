@@ -99,6 +99,10 @@
                     "type": "string",
                     "description": "Cue message"
                 },
+                "inlineKeyboard": {
+                    "type": "boolean",
+                    "description": "Inline keyboard"
+                },
                 "choices": {
                     "type": "array",
                     "items": {
@@ -119,6 +123,10 @@
                 "video": {
                     "type": "string",
                     "description": "Video"
+                },
+                "onlyOneButton": {
+                    "type": "boolean",
+                    "description": "Only one button"
                 },
                 "waitForInput": {
                     "$ref": "#/definitions/IWaitForInput"

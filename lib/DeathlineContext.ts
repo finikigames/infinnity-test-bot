@@ -2,6 +2,7 @@ import { IGame, IUser, TCue} from './deathline';
 import { IReply, TextRenderer } from './TextRenderer';
 import { TContext } from './extendContext';
 import { MediaRenderer } from './MediaRenderer';
+import {Extra} from 'telegraf';
 
 export class DeathlineContext {
     private tgBot: Telegraf;
@@ -78,6 +79,12 @@ export class DeathlineContext {
             });
         } else {
             if (this.game.settings.markdown) {
+                if (!reply.buttons) {
+                    const text = Extra.markup((markup: any) => markup.removeKeyboard());
+
+                    return ctx.replyWithMarkdown(reply.message, text);
+                }
+
                 return ctx.replyWithMarkdown(reply.message, reply.buttons);
             } else {
                 return ctx.replyWithHTML(reply.message, reply.buttons);
@@ -86,6 +93,8 @@ export class DeathlineContext {
     }
 
     public help(ctx: TContext, user: IUser) {
+        this.game.state.
+
         return (this.game.settings.markdown ? ctx.replyWithMarkdown : ctx.replyWithHTML)(this.textRenderer.help(user.state || this.game.state));
     }
 }
