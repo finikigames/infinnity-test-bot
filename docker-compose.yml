@@ -1,19 +1,10 @@
 version: '3'
 
 services:
-  telegram-bot:
+  telegram-bot-2:
     build:
       context: .
       dockerfile: Dockerfile
     environment:
       - BOT_TOKEN=${BOT_TOKEN}
       - GAME_NAME=test_game
-    depends_on:
-      - mongo
-    links:
-      - mongo
-  mongo:
-    image: mongo:latest
-    container_name: mongodb
-    ports:
-      - "27017:27017"
