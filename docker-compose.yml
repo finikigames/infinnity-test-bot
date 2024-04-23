@@ -8,6 +8,8 @@ services:
     environment:
       - BOT_TOKEN=${BOT_TOKEN}
       - GAME_NAME=test_game
+    volumes:
+      - database:/app
   server-2:
       build: ./Server
       environment:
@@ -18,3 +20,8 @@ services:
           - telegram-bot-2
       links:
           - telegram-bot-2
+      volumes:
+          - database:/app
+
+volumes:
+    database:
