@@ -12,7 +12,40 @@ let sessionsData = JSON.parse(fs.readFileSync('../game_db.json', 'utf-8'));
 
 // Роут для отправки данных
 app.get('/data', (req, res) => {
-    res.json(sessionsData);
+    // Чтение JSON файла
+    const jsonData = JSON.parse(fs.readFileSync('../game_db.json', 'utf-8')).sessions;
+
+    // Добавление общего количества записей
+    const totalCount = jsonData.length;
+
+    // Формирование HTML таблицы
+    let tableHtml = '<table border="1">';
+    tableHtml += `<tbody><tr>Общее количество записей: ${totalCount}</tr>`;
+
+    tableHtml += '<thead><tr><th>ID</th><th>Имя пользователя</th><th>Имя отображаемое</th><th>Состояние</th><th>Текущий ID</th><th>Результат</th></tr></thead>';
+    tableHtml += '<tbody>';
+
+    if (Array.isArray(jsonData)) {
+        jsonData.forEach((session) => {
+            const user = session.data[Object.keys(session.data)[0]];
+            tableHtml += '<tr>';
+            tableHtml += `<td>${session.id}</td>`;
+            tableHtml += `<td>${user.userName}</td>`;
+            tableHtml += `<td>${user.displayName}</td>`;
+            tableHtml += '<td><ul>';
+            const state = user.state;
+            Object.keys(state).forEach((key) => {
+                tableHtml += `<li>${key}: ${state[key]}</li>`;
+            });
+            tableHtml += '</ul></td>';
+            tableHtml += `<td>${user.currentId}</td>`;
+            tableHtml += `<td>${user.state.result}</td>`;
+            tableHtml += '</tr>';
+        });
+    }
+
+    tableHtml += '</tbody></table>';
+    res.send(tableHtml);
 });
 
 // Роут для обновления данных
@@ -38,7 +71,7 @@ io.on('connection', (socket) => {
     });
 });
 
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 4001;
 server.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
