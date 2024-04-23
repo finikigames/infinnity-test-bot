@@ -14,7 +14,7 @@ import { extendContext, TContext } from './lib/extendContext';
 
 dotenv.config();
 
-const bot = createBot(process.env.BOT_TOKEN as string, '/Database/game_db.json');
+const bot = createBot(process.env.BOT_TOKEN as string, 'game_db.json');
 
 loadGame(process.env.GAME_NAME).then((game) => {
     const timeOutManager = new TimeOutManager();
