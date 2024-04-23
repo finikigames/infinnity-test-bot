@@ -8,12 +8,12 @@ const server = http.createServer(app);
 const io = new Server(server);
 
 // Чтение JSON файла при запуске сервера
-let sessionsData = JSON.parse(fs.readFileSync('game_db.json', 'utf-8'));
+let sessionsData = JSON.parse(fs.readFileSync('/app/Database/game_db.json', 'utf-8'));
 
 // Роут для отправки данных
 app.get('/data', (req, res) => {
     // Чтение JSON файла
-    const jsonData = JSON.parse(fs.readFileSync('game_db.json', 'utf-8')).sessions;
+    const jsonData = JSON.parse(fs.readFileSync('/app/Database/game_db.json', 'utf-8')).sessions;
 
     // Добавление общего количества записей
     const totalCount = jsonData.length;
