@@ -8,7 +8,7 @@ const server = http.createServer(app);
 const io = new Server(server);
 
 // Чтение JSON файла при запуске сервера
-let sessionsData = JSON.parse(fs.readFileSync('../game_db.json', 'utf-8'));
+let sessionsData = JSON.parse(fs.readFileSync('/app/game_db.json', 'utf-8'));
 
 // Роут для отправки данных
 app.get('/data', (req, res) => {
